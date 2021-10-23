@@ -24,13 +24,13 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
 
-def get_user(db, username: str):
-    if username in db:
-        user_dict = db[username]
+def get_user(db, email: str):
+    if email in db:
+        user_dict = db[email]
         return UserInDB(**user_dict)
 
-def authenticate_user(fake_db, username: str, password: str):
-    user = get_user(fake_db, username)
+def authenticate_user(fake_db, email: str, password: str):
+    user = get_user(fake_db, email)
     if not user:
         return False
     if not verify_password(password, user.hashed_password):

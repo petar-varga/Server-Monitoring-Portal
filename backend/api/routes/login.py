@@ -18,10 +18,12 @@ from api.deps import get_current_active_user
 
 from core.cookie_auth_session import BasicAuth
 
+from schemas.LoginRequest import LoginRequest
+
 router = APIRouter()
 
 fake_users_db = {
-    "johndoe": {
+    "johndoe@example.com": {
         "username": "johndoe",
         "full_name": "John Doe",
         "email": "johndoe@example.com",
@@ -49,12 +51,12 @@ async def route_login_access_token(response: Response, form_data: OAuth2Password
     return {"access_token": access_token, "token_type": "bearer"}
 
 @router.post("/login", response_model=Token)
-async def login_jwt(response: Response, form_data: OAuth2PasswordRequestForm = Depends()):
-    user = authenticate_user(fake_users_db, form_data.username, form_data.password)
+async def login_jwt(login_data: LoginRequest, response: Response):
+    user = authenticate_user(fake_users_db, login_data.email, login_data.password)
     if not user:
-        raise HTTPException(status_code=400, detail="Incorrect username or password")
+        raise HTTPException(status_code=400, detail={'error': 'Incorrect email or password'})
     access_token = create_access_token(
-        data={"sub": user.username}
+        data={"sub": user.email}
     )
     response.set_cookie(
         "Authorization",
