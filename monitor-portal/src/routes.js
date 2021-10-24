@@ -7,15 +7,19 @@ import {
 
 import NotFoundPage from "./pages/404Page";
 
+import DashboardLayout from "./layouts/dashboard";
 import Login from "./pages/login";
 import ServerManagement from "./pages/serverManagement";
 
 const ServerManagementComponent = React.lazy(() =>
   import("./pages/serverManagement")
 );
+const HomePageComponent = React.lazy(() =>
+  import("./pages/homePage")
+);
 
 export const INDEX_ROUTE = "/";
-export const SERVERS_ROUTE = "/";
+export const SERVERS_ROUTE = "/servers-overview";
 
 // ROUTES
 export const NON_LOGIN_ROUTES = [
@@ -34,8 +38,14 @@ export const LOGGED_IN_ROUTES = [
   {
     name: "layout",
     path: INDEX_ROUTE,
-    component: ServerManagement,
+    component: DashboardLayout,
     routes: [
+      {
+        exact: true,
+        name: "home",
+        path: INDEX_ROUTE,
+        component: HomePageComponent,
+      },
       {
         exact: true,
         name: "servers-management",

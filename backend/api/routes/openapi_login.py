@@ -32,11 +32,12 @@ fake_users_db = {
     }
 }
 
-@router.post("/login", response_model=Token)
-async def login_jwt(login_data: LoginRequest, response: Response):
-    user = authenticate_user(fake_users_db, login_data.email, login_data.password)
+# support for usage with Docs Authorize "flow"
+@router.post("/token", response_model=Token)
+async def route_login_access_token(response: Response, form_data: OAuth2PasswordRequestForm = Depends()):
+    user = authenticate_user(fake_users_db, form_data.username, form_data.password)
     if not user:
-        raise HTTPException(status_code=400, detail={'error': 'Incorrect email or password'})
+        raise HTTPException(status_code=400, detail="Incorrect username or password")
     access_token = create_access_token(
         data={"sub": user.email}
     )
@@ -48,13 +49,3 @@ async def login_jwt(login_data: LoginRequest, response: Response):
         expires=1800,
     )
     return {"access_token": access_token, "token_type": "bearer"}
-
-@router.get("/auth_user", response_model=User)
-async def auth_user_check(current_user: User = Depends(get_current_active_user)):
-    return current_user
-
-@router.get("/logout")
-async def route_logout_and_remove_cookie():
-    response = RedirectResponse(url="/")
-    response.delete_cookie("Authorization")
-    return response
