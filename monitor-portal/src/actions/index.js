@@ -9,12 +9,9 @@ export const loginUser = (payload) => {
       .post(endpoints.LOGIN_API_PATH, payload)
       .then((response) => {
         const { data } = response;
-        data = {
-          token: "some token"
-        }
         instance.defaults.headers.common[
           "Authorization"
-        ] = `Bearer ${data.token}`;
+        ] = `Bearer ${data.access_token}`;
         resolve(data);
       })
       .catch((err) => {

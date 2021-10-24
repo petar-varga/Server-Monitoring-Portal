@@ -67,6 +67,10 @@ async def login_jwt(login_data: LoginRequest, response: Response):
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
+@router.get("/auth_user", response_model=User)
+async def auth_user_check(current_user: User = Depends(get_current_active_user)):
+    return current_user
+
 @router.get("/logout")
 async def route_logout_and_remove_cookie():
     response = RedirectResponse(url="/")

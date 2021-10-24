@@ -31,7 +31,7 @@ oauth2_scheme = OAuth2PasswordBearerCookie(tokenUrl="/token")
 from db.session import SessionLocal
 
 fake_users_db = {
-    "johndoe": {
+    "johndoe@example.com": {
         "username": "johndoe",
         "full_name": "John Doe",
         "email": "johndoe@example.com",

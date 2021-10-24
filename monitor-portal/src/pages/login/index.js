@@ -17,7 +17,7 @@ const Login = ({ setAccountData }) => {
       .then((response) => {
         setProcessing(false);
         setAccountData(response);
-        localStorage.setItem(AUTHORIZATION_KEY, response.token);
+        localStorage.setItem(AUTHORIZATION_KEY, response.access_token);
       })
       .catch((err) => {
         setProcessing(false);
