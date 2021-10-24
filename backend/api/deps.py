@@ -19,8 +19,7 @@ from starlette.requests import Request
 
 # importing Cookie based auth setups
 from core.cookie_auth_session import BasicAuth, OAuth2PasswordBearerCookie
-from models.token_data import TokenData
-from models.user import User
+from schemas.user import User
 from core.config import settings
 from core.security import get_user
 
@@ -56,10 +55,9 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         email: str = payload.get("sub")
         if email is None:
             raise credentials_exception
-        token_data = TokenData(email=email)
     except PyJWTError:
         raise credentials_exception
-    user = get_user(fake_users_db, email=token_data.email)
+    user = get_user(fake_users_db, email=email)
     if user is None:
         raise credentials_exception
     return user

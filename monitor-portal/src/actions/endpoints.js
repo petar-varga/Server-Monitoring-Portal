@@ -1,8 +1,9 @@
 export const LOGIN_API_PATH = "login/";
 export const AUTH_USER_API_PATH = "auth_user/";
 
-export const SERVERS_API_PATH = "servers";
-export const ALL_SERVERS_API_PATH = `${SERVERS_API_PATH}/list`;
+export const SERVER_API_PATH = "server";
+export const ALL_SERVERS_API_PATH = `${SERVER_API_PATH}/list`;
+export const ADD_SERVER_API_PATH = `${SERVER_API_PATH}/add`;
 
 export const USERS_API_PATH = "users/";
 export const USERS_DETAIL_API_PATH = `${USERS_API_PATH}{}/`;

@@ -1,6 +1,6 @@
 from core.security import authenticate_user, create_access_token
-from models.token import Token
-from models.user import User, UserInDB
+from schemas.token import Token
+from schemas.user import User, UserBase, UserInDB
 import base64
 
 from pydantic import BaseModel
@@ -18,7 +18,7 @@ from api.deps import get_current_active_user
 
 from core.cookie_auth_session import BasicAuth
 
-from schemas.LoginRequest import LoginRequest
+from schemas.login import LoginCheck
 
 router = APIRouter()
 
@@ -33,7 +33,7 @@ fake_users_db = {
 }
 
 @router.post("/login", response_model=Token)
-async def login_jwt(login_data: LoginRequest, response: Response):
+async def login_jwt(login_data: LoginCheck, response: Response):
     user = authenticate_user(fake_users_db, login_data.email, login_data.password)
     if not user:
         raise HTTPException(status_code=400, detail={'error': 'Incorrect email or password'})
@@ -49,8 +49,8 @@ async def login_jwt(login_data: LoginRequest, response: Response):
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
-@router.get("/auth_user", response_model=User)
-async def auth_user_check(current_user: User = Depends(get_current_active_user)):
+@router.get("/auth_user", response_model=UserBase)
+async def auth_user_check(current_user: UserInDB = Depends(get_current_active_user)):
     return current_user
 
 @router.get("/logout")

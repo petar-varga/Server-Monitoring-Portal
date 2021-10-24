@@ -6,7 +6,7 @@ from passlib.context import CryptContext
 
 from core.config import settings
 
-from models.user import UserInDB
+from schemas.user import UserInDB
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 

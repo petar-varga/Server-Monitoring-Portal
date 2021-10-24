@@ -1,25 +1,9 @@
 from core.security import authenticate_user, create_access_token
-from models.token import Token
-from models.user import User, UserInDB
-import base64
+from schemas.token import Token
 
-from pydantic import BaseModel
-
-from fastapi import APIRouter, Depends, FastAPI, HTTPException
-from fastapi.encoders import jsonable_encoder
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
-from starlette.status import HTTP_403_FORBIDDEN
-from starlette.responses import RedirectResponse, Response, JSONResponse
-from starlette.requests import Request
-
-# importing custom dependencies
-from api.deps import pwd_context, oauth2_scheme, basic_auth
-from api.deps import get_current_active_user
-
-from core.cookie_auth_session import BasicAuth
-
-from schemas.LoginRequest import LoginRequest
-
+from starlette.responses import Response
 router = APIRouter()
 
 fake_users_db = {
