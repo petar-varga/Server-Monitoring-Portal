@@ -1,47 +1,45 @@
+import { useEffect, useState } from "react";
 import { Table } from "antd";
-import { useHistory } from "react-router";
 
-const NotFoundPage = () => {
-  const history = useHistory();
-  const dataSource = [
-    {
-      key: '1',
-      serverInfo: {
-        "name": "MFS Prod",
-        "ip": "127.0.0.1"
-      },
-      operatingSystem: "Ubuntu",
-      status: 'Running',
-    },
-    {
-      key: '2',
-      serverInfo: {
-        "name": "MFS Prod",
-        "ip": "127.0.0.1"
-      },
-      operatingSystem: "CentOS",
-      status: 'Stopped',
-    },
-  ];
+import { getInstances } from "../../actions";
+
+const ServerManagementPage = () => {
+  const [instances, setInstances] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  function getList(page = 1) {
+    setLoading(true);
+    const params = "";
+    getInstances(params).then((response) => {
+      const { data } = response;
+      setLoading(false);
+      setInstances(data.map(
+        (instance) => {
+          instance.key = instance.id
+          return instance;
+        }
+      ));
+    });
+  }
   
   const columns = [
     {
       title: 'Server',
-      dataIndex: 'serverInfo',
-      key: 'serverInfo',
+      dataIndex: 'server_info',
+      key: 'server_info',
       render: serverInfo => 
-      <>
-        <p style={{
-          display: "block",
-          fontWeight: "bold",
-      }}>{serverInfo.name}</p>
-        <p>{serverInfo.ip}</p>
-      </>
+        <>
+          <p style={{
+            display: "block",
+            fontWeight: "bold",
+        }}>{serverInfo.name}</p>
+          <p>{serverInfo.ip}</p>
+        </>
     },
     {
       title: 'OS',
-      dataIndex: 'operatingSystem',
-      key: 'operatingSystem',
+      dataIndex: 'operating_system',
+      key: 'operating_system',
     },
     {
       title: 'Status',
@@ -50,6 +48,10 @@ const NotFoundPage = () => {
     },
   ];
 
+  useEffect(() => {
+    getList();
+  }, []);
+
   return (
     <div className="not-found-page">
       <div className="text-center">
@@ -57,13 +59,13 @@ const NotFoundPage = () => {
           SERVER MANAGEMENT
         </p>
         <Table 
-          dataSource={dataSource} 
+          dataSource={instances} 
           columns={columns}
-
+          loading={loading}
         />
       </div>
     </div>
   );
 };
 
-export default NotFoundPage;
+export default ServerManagementPage;

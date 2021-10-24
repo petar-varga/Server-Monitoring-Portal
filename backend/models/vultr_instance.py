@@ -5,7 +5,7 @@ class ServerInfo(BaseModel):
     ip: str
 
 class ServerInstance(BaseModel):
-    id: int
-    serverInfo: ServerInfo
-    operatingSystem: str = None
+    id: str
+    server_info: ServerInfo
+    operating_system: str = None
     status: str = None

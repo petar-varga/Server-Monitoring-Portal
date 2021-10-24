@@ -55,3 +55,8 @@ export const updateUser = (payload, userId) => {
     payload
   );
 };
+
+export const getInstances = (queryString) => {
+  let path = endpoints.ALL_SERVERS_API_PATH;
+  return instance.get(path);
+};
