@@ -1,12 +1,15 @@
 from pydantic import BaseModel
 
 class UserBase(BaseModel):
-    email: str = None
-    username: str = None
+    email: str
 
 class User(UserBase):
-    full_name: str = None
+    first_name: str
+    last_name: str
 
 class UserInDB(User):
     hashed_password: str
     disabled: bool = None
+
+    class Config:
+        orm_mode = True

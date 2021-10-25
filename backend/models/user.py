@@ -1,19 +1,22 @@
-from sqlalchemy import Column, BigInteger, DateTime, Text
+from sqlalchemy import Column, BigInteger, Text
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from sqlalchemy.sql.schema import ForeignKey
+from sqlalchemy.sql.sqltypes import Boolean, DateTime
 
 from db.base_class import Base
 
-class MySQLQuery(Base):
-    __tablename__ = "mysql_query"
+class User(Base):
+    __tablename__ = "user"
 
     id = Column(BigInteger, primary_key=True, index=True, autoincrement=True, nullable=False)
-    name = Column(Text, nullable=True, default=None)
-    sql_query = Column(Text, nullable=True, default=None)
+    email = Column(Text, nullable=False)
+    first_name = Column(Text, nullable=False)
+    last_name = Column(Text, nullable=False)
+    hashed_password = Column(Text, nullable=False)
+    disabled = Column(Boolean, nullable=True, default=False)
     date_added = Column(DateTime, nullable=True, default=func.now())
     date_updated = Column(DateTime, nullable=True, onupdate=func.now())
     account_id = Column(BigInteger, ForeignKey("account.id"), nullable=False)
 
-    owner_account = relationship("Account", back_populates="mysql_queries")
-    
+    account_group = relationship("Account", back_populates="users")

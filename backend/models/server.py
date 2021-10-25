@@ -1,6 +1,8 @@
 from sqlalchemy import Column, BigInteger, DateTime, Text
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
+from sqlalchemy.sql.schema import ForeignKey
+from sqlalchemy.sql.sqltypes import Integer
 
 from db.base_class import Base
 
@@ -14,6 +16,7 @@ class Server(Base):
     status = Column(Text, nullable=True, default="Initializing")
     date_added = Column(DateTime, nullable=True, default=func.now())
     date_updated = Column(DateTime, nullable=True, onupdate=func.now())
-
-    mysql_queries = relationship("MySQLQuery", back_populates="owner_server")
+    owner_account_id = Column(BigInteger, ForeignKey("account.id"))
+    
+    owner = relationship("Account", back_populates="servers")
     
