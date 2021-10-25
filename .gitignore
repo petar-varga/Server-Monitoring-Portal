@@ -1,2 +1,3 @@
 monitor-portal/.env.development
 monitor-portal/.env.production
+monitor-portal/package-lock.json

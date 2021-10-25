@@ -33,7 +33,7 @@ def get_vltr_instances():
     return json_object
 
 @router.get("/list", response_model=List[ServerListDetails])
-async def list_vultr_instances(
+async def list_server_instances(
         current_user: UserInDB = Depends(get_current_active_user),
         db: Session = Depends(get_db),
     ):
@@ -42,7 +42,7 @@ async def list_vultr_instances(
     return server_list
 
 @router.post("/add", response_model=ServerListDetails)
-async def list_vultr_instances(
+async def add_server_instance(
         addition_data: ServerCreate,
         current_user: UserInDB = Depends(get_current_active_user),
         db: Session = Depends(get_db)

@@ -1,0 +1,68 @@
+from typing import List
+import json
+import requests
+
+import crud
+from schemas.server_management import ExecuteMysqlQueryResponse
+
+from schemas.user import UserInDB
+from schemas.server import ServerCreate, ServerListDetails
+
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+
+# importing custom dependencies
+from api.deps import pwd_context, oauth2_scheme, basic_auth
+from api.deps import get_current_active_user, get_db
+
+from core.config import settings
+import time
+
+router = APIRouter()
+
+def get_api_response(server_ip, access_token):
+    url = server_ip + f"?access_token={access_token}"
+
+    payload={}
+    headers = {}
+
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    return response
+
+@router.post("/get-and-wait-sql-query-result", response_model=ExecuteMysqlQueryResponse)
+async def get_and_wait_sql_query_result(
+        server_id: int,
+        sql_query_id: int,
+        current_user: UserInDB = Depends(get_current_active_user),
+        db: Session = Depends(get_db)
+    ):
+
+    # get server info
+    #server = crud.server.get(db, server_id)
+
+    start_time = time.time()
+    response = get_api_response("http://127.0.0.1:8500/api/v1/execute-generic-mysql-query", "123")
+    end_time = time.time()
+    
+    try:
+        json_response = json.loads(response.text)
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=500, detail={'error': 'Bad target server response!'})
+
+    if not isinstance(json_response, list):
+        potential_error_response = json_response.get("detail", {}).get("error", None)
+        if potential_error_response != None:
+            raise HTTPException(403, detail={
+                "error": "unauthorized response returned from target server"
+            })
+        
+        raise HTTPException(403, detail={
+            "error": "Unknown target server error"
+        })
+
+    return ExecuteMysqlQueryResponse(
+        query_response = json_response,
+        query_time_ms = (end_time - start_time) * 1000
+    )

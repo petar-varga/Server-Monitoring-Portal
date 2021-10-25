@@ -8,18 +8,22 @@ from sqlalchemy.orm import Session
 from core.config import settings
 import time
 
+from api.deps import verify_access_token
+
 router = APIRouter()
 
 def perform_raw_sql_query():
-    json_object = {
-        "field_name": "field value"
-    }
+    db_result = [
+        {
+            "field_name": "field value"
+        }
+    ]
 
-    return json_object
+    return db_result
 
-@router.get("/execute-generic-mysql-query", response_model=dict)
+@router.get("/execute-generic-mysql-query", response_model=List[dict])
 async def execute_generic_mysql_query(
-        access_token: str
+        access_token: str = Depends(verify_access_token)
     ):
 
     result = perform_raw_sql_query()

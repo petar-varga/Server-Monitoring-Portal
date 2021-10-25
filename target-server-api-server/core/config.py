@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Optional, Union
 
 from pydantic import AnyHttpUrl, BaseSettings, EmailStr, HttpUrl, validator
 
-from core.secret_data_loading import MYSQL_DATABASE_ENV, MYSQL_PASSWORD_ENV, MYSQL_SERVER_ENV, MYSQL_USERNAME_ENV, API_KEY
+from core.secret_data_loading import MYSQL_DATABASE_ENV, MYSQL_PASSWORD_ENV, MYSQL_SERVER_ENV, MYSQL_USERNAME_ENV, PRIVATE_ACCESS_TOKEN
 
 class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
@@ -36,7 +36,7 @@ class Settings(BaseSettings):
     MYSQL_USER: str = MYSQL_USERNAME_ENV
     MYSQL_PASSWORD: str = MYSQL_PASSWORD_ENV
     MYSQL_DB: str = MYSQL_DATABASE_ENV
-    V_API_KEY: str = API_KEY
+    PRIVATE_ACCESS_TOKEN: str = PRIVATE_ACCESS_TOKEN
     SQLALCHEMY_DATABASE_URI: str = None
 
     # this auto builds the sqlalchemy database uri
