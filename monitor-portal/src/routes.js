@@ -17,9 +17,17 @@ const ServerManagementComponent = React.lazy(() =>
 const HomePageComponent = React.lazy(() =>
   import("./pages/homePage")
 );
+const SingleServerManagementComponent = React.lazy(() =>
+  import("./pages/singleServerManagement")
+);
 
 export const INDEX_ROUTE = "/";
-export const SERVERS_ROUTE = "/servers-overview";
+export const SERVERS_ROUTE = "/servers";
+export const SERVER_ROUTE = `/server/:serverId/`;
+
+export const getSingleServerManagementRoute = (serverId) => {
+  return SERVER_ROUTE.replace(":serverId", serverId);
+};
 
 // ROUTES
 export const NON_LOGIN_ROUTES = [
@@ -48,9 +56,15 @@ export const LOGGED_IN_ROUTES = [
       },
       {
         exact: true,
-        name: "servers-management",
+        name: "servers",
         path: SERVERS_ROUTE,
         component: ServerManagementComponent,
+      },
+      {
+        exact: true,
+        name: "server",
+        path: SERVER_ROUTE,
+        component: SingleServerManagementComponent,
       }
     ],
   },
