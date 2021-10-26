@@ -11,4 +11,4 @@ from schemas.account import AccountCreate, AccountUpdate
 class CRUDAccount(CRUDBase[Account, AccountCreate, AccountUpdate]):
     pass
 
-server = CRUDAccount(Account)
+account = CRUDAccount(Account)
