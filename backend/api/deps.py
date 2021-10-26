@@ -31,8 +31,12 @@ from db.session import SessionLocal
 
 fake_users_db = {
     "johndoe@example.com": {
+        "id": 1,
+        "account_id": 1,
         "username": "johndoe",
         "full_name": "John Doe",
+        "first_name": "John",
+        "last_name": "Doe",
         "email": "johndoe@example.com",
         "hashed_password": "fakehashedsecret",
         "disabled": False,

@@ -1,3 +1,4 @@
+from typing import TYPE_CHECKING
 from sqlalchemy import Column, BigInteger, DateTime, Text
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -5,6 +6,10 @@ from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy.sql.sqltypes import Integer
 
 from db.base_class import Base
+
+if TYPE_CHECKING:
+    # from .user import User  # noqa: F401
+    from models.account import Account
 
 class Server(Base):
     __tablename__ = "server"

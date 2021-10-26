@@ -1,9 +1,15 @@
 from sqlalchemy import Column, BigInteger, Text
+from typing import TYPE_CHECKING
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from sqlalchemy.sql.sqltypes import Boolean, DateTime
 
 from db.base_class import Base
+if TYPE_CHECKING:
+    # from .user import User  # noqa: F401
+    from models.user import User
+    from models.server import Server
+    from models.mysql_query import MySQLQuery
 
 class Account(Base):
     __tablename__ = "account"

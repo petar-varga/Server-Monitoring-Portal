@@ -3,6 +3,7 @@ import requests
 import json
 
 import crud
+import models
 
 from schemas.user import UserInDB
 from schemas.server import ServerCreate, ServerListDetails
@@ -37,7 +38,7 @@ async def list_server_instances(
         current_user: UserInDB = Depends(get_current_active_user),
         db: Session = Depends(get_db),
     ):
-    server_list = crud.server.get_multi(db)
+    server_list = crud.server.get_for_account_owner(db, current_user.account_id)
 
     return server_list
 
