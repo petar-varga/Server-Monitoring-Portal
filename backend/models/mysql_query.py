@@ -15,5 +15,6 @@ class MySQLQuery(Base):
     date_updated = Column(DateTime, nullable=True, onupdate=func.now())
     account_id = Column(BigInteger, ForeignKey("account.id"), nullable=False)
 
+    servers = relationship("MySQLQueryServerAssigned", back_populates="queries")
     owner_account = relationship("Account", back_populates="mysql_queries")
     

@@ -37,9 +37,6 @@ async def get_and_wait_sql_query_result(
         current_user: UserInDB = Depends(get_current_active_user),
         db: Session = Depends(get_db)
     ):
-
-    current_user_fresh = crud.user.get(db, id=current_user.id)
-
     # get server info
     server = crud.server.get_single_for_account_owner(
         db, owner_id=current_user.account_id, 
