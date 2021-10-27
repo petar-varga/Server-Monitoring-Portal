@@ -1,12 +1,11 @@
 from datetime import datetime, timedelta
-from typing import Any, Union
+from sqlalchemy.orm import Session
 
 from jose import jwt
 from passlib.context import CryptContext
-
 from core.config import settings
-
 from schemas.user import UserInDB
+import crud
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -24,13 +23,12 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
 
-def get_user(db, email: str):
-    if email in db:
-        user_dict = db[email]
-        return UserInDB(**user_dict)
+def get_user(db: Session, email: str):
+    user = crud.user.get_by_email(db, email)
+    return user
 
-def authenticate_user(fake_db, email: str, password: str):
-    user = get_user(fake_db, email)
+def authenticate_user(db: Session, email: str, password: str):
+    user = get_user(db, email)
     if not user:
         return False
     if not verify_password(password, user.hashed_password):

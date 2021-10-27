@@ -8,6 +8,11 @@ from models.user import User
 from schemas.user import UserCreate, UserUpdate
 
 class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
-    pass
+    def get_by_email(
+        self, db: Session, email: str
+    ) -> User:
+        return db.query(self.model).filter(
+            self.model.email == email
+        ).first()
 
 user = CRUDUser(User)

@@ -9,13 +9,20 @@ from schemas.mysql_query import MySQLQueryCreate, MySQLQueryCreateAccountOwner, 
 
 
 class CRUDMySQLQuery(CRUDBase[MySQLQuery, MySQLQueryCreate, MySQLQueryUpdate]):
-    def get_for_account_owner(
+    def get_single_for_account_owner(
         self, db: Session, owner_id: int, id: int
     ) -> MySQLQuery:
         return db.query(self.model).filter(
             self.model.id == id,
             self.model.account_id == owner_id
         ).first()
+
+    def get_all_for_account_owner(
+        self, db: Session, owner_id: int
+    ) -> MySQLQuery:
+        return db.query(self.model).filter(
+            self.model.account_id == owner_id
+        ).all()
 
     def create_for_account_owner(
         self, db: Session, *, 

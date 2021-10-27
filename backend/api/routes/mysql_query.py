@@ -5,7 +5,7 @@ import json
 import crud
 import models
 
-from schemas.mysql_query import MySQLQueryCreateAccountOwner, MySQLQueryCreate, MySQLQuery
+from schemas.mysql_query import MySQLQueryCreateAccountOwner, MySQLQueryCreate, MySQLQuery, MySQLQueryList
 
 from schemas.user import UserInDB
 
@@ -29,12 +29,21 @@ async def get_sql_query_details(
     ):
     current_user_fresh = crud.user.get(db, id=current_user.id)
 
-    account_info = crud.mysql_query.get_for_account_owner(
+    account_info = crud.mysql_query.get_single_for_account_owner(
         db, owner_id=current_user_fresh.account_id,
         id=mysql_query_id
     )
 
     return account_info
+
+@router.get("/list", response_model=List[MySQLQueryList])
+async def list_mysql_queries(
+        current_user: UserInDB = Depends(get_current_active_user),
+        db: Session = Depends(get_db),
+    ):
+    mysql_queries = crud.mysql_query.get_all_for_account_owner(db, current_user.account_id)
+
+    return mysql_queries
 
 @router.post("/add", response_model=MySQLQuery)
 async def add_mysql_query(

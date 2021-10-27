@@ -18,6 +18,12 @@ class MySQLQueryCreate(MySQLQuery):
 class MySQLQueryUpdate(MySQLQuery):
     id: int
 
+class MySQLQueryList(MySQLQuery):
+    id: int
+
+    class Config:
+        orm_mode = True
+
 class MySQLQueryCreateAccountOwner(MySQLQueryCreate):
     account_id: int
 

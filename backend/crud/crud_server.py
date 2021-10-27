@@ -18,6 +18,14 @@ class CRUDServer(CRUDBase[Server, ServerCreate, ServerUpdate]):
         db.commit()
         db.refresh(db_obj)
         return db_obj
+
+    def get_single_for_account_owner(
+        self, db: Session, owner_id: int, id: int
+    ) -> Server:
+        return db.query(self.model).filter(
+            self.model.id == id,
+            self.model.owner_account_id == owner_id
+        ).first()
     
     def get_for_account_owner(
         self, db: Session, owner_id: int

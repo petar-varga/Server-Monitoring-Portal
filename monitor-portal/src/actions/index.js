@@ -65,3 +65,8 @@ export const addServer = (payload) => {
   let path = endpoints.ADD_SERVER_API_PATH;
   return instance.post(path, payload);
 };
+
+export const getMysqlQueries = (queryString) => {
+  let path = endpoints.ALL_MYSQL_QUERIES_API_PATH;
+  return instance.get(path);
+};

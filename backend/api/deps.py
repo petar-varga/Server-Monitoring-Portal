@@ -22,26 +22,13 @@ from core.cookie_auth_session import BasicAuth, OAuth2PasswordBearerCookie
 from schemas.user import User
 from core.config import settings
 from core.security import get_user
+from sqlalchemy.orm import Session
 
 basic_auth = BasicAuth(auto_error=False)
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearerCookie(tokenUrl="/token")
 
 from db.session import SessionLocal
-
-fake_users_db = {
-    "johndoe@example.com": {
-        "id": 1,
-        "account_id": 2,
-        "username": "johndoe",
-        "full_name": "John Doe",
-        "first_name": "John",
-        "last_name": "Doe",
-        "email": "johndoe@example.com",
-        "hashed_password": "fakehashedsecret",
-        "disabled": False,
-    }
-}
 
 def get_db() -> Generator:
     try:
@@ -50,7 +37,7 @@ def get_db() -> Generator:
     finally:
         db.close()
 
-async def get_current_user(token: str = Depends(oauth2_scheme)):
+async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     credentials_exception = HTTPException(
         status_code=HTTP_403_FORBIDDEN, detail="Could not validate credentials"
     )
@@ -61,7 +48,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
             raise credentials_exception
     except PyJWTError:
         raise credentials_exception
-    user = get_user(fake_users_db, email=email)
+    user = get_user(db, email)
     if user is None:
         raise credentials_exception
     return user

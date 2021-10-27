@@ -22,23 +22,10 @@ from schemas.login import LoginCheck
 
 router = APIRouter()
 
-fake_users_db = {
-    "johndoe@example.com": {
-        "id": 1,
-        "account_id": 2,
-        "username": "johndoe",
-        "full_name": "John Doe",
-        "first_name": "John",
-        "last_name": "Doe",
-        "email": "johndoe@example.com",
-        "hashed_password": "fakehashedsecret",
-        "disabled": False,
-    }
-}
 
 @router.post("/login", response_model=Token)
 async def login_jwt(login_data: LoginCheck, response: Response):
-    user = authenticate_user(fake_users_db, login_data.email, login_data.password)
+    user = authenticate_user(login_data.email, login_data.password)
     if not user:
         raise HTTPException(status_code=400, detail={'error': 'Incorrect email or password'})
     access_token = create_access_token(

@@ -6,7 +6,7 @@ import crud
 import models
 
 from schemas.user import UserInDB
-from schemas.server import ServerCreate, ServerListDetails
+from schemas.server import ServerCreate, ServerListDetailsNoAccessToken, ServerListDetailsWithAccessToken
 
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
@@ -33,7 +33,7 @@ def get_vltr_instances():
 
     return json_object
 
-@router.get("/list", response_model=List[ServerListDetails])
+@router.get("/list", response_model=List[ServerListDetailsNoAccessToken])
 async def list_server_instances(
         current_user: UserInDB = Depends(get_current_active_user),
         db: Session = Depends(get_db),
@@ -42,13 +42,12 @@ async def list_server_instances(
 
     return server_list
 
-@router.post("/add", response_model=ServerListDetails)
+@router.post("/add", response_model=ServerListDetailsWithAccessToken)
 async def add_server_instance(
         addition_data: ServerCreate,
         current_user: UserInDB = Depends(get_current_active_user),
         db: Session = Depends(get_db)
     ):
-    time.sleep(2)
     server = crud.server.create(
         db=db, obj_in=addition_data
     )

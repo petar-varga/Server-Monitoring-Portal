@@ -19,6 +19,8 @@ class Server(Base):
     operating_system = Column(Text, nullable=True, default=None)
     ip = Column(Text, nullable=True, default=None)
     status = Column(Text, nullable=True, default="Initializing")
+    access_token = Column(Text, nullable=True, default=None)
+    webserver_ip = Column(Text, nullable=True, default=None)
     date_added = Column(DateTime, nullable=True, default=func.now())
     date_updated = Column(DateTime, nullable=True, onupdate=func.now())
     owner_account_id = Column(BigInteger, ForeignKey("account.id"))
