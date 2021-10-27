@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useParams } from "react-router";
 import { Link, useHistory } from "react-router-dom";
 import { Table, Modal, Button, Form, Input, Card, Space, Tabs, Select, message } from "antd";
 import { getMysqlQueries } from "../../actions";
@@ -8,7 +9,10 @@ const { Option } = Select;
 
 const SingleServerManagementPage = () => {
     const [loading, setLoading] = useState(false);
-    const [mysqlQueries, setQueries] = useState([]);
+    const [mySqlQueries, setmySqlQueries] = useState([]);
+
+    const params = useParams();
+    const { serverId } = params;
 
     const columns = [
         {
@@ -35,30 +39,18 @@ const SingleServerManagementPage = () => {
         alert(mysqlQueryId, "is query id");
     }
 
-    function listAllMysqlQueries(page = 1) {
+    function listAllMysqlQueries() {
         setLoading(true);
         const params = "";
         getMysqlQueries(params).then((response) => {
             const { data } = response;
             setLoading(false);
-            setQueries(data);
+            setmySqlQueries(data);
         });
     }
 
-    function onChange(value) {
+    function handleChange(value) {
         console.log(`selected ${value}`);
-    }
-
-    function onBlur() {
-        console.log('blur');
-    }
-
-    function onFocus() {
-        console.log('focus');
-    }
-
-    function onSearch(val) {
-        console.log('search:', val);
     }
 
     useEffect(() => {
@@ -74,26 +66,30 @@ const SingleServerManagementPage = () => {
                 Generic server health metrics
             </TabPane>
             <TabPane tab="MySQL Queries" key="3">
-                Custom MySQL Queries
+                Select Desired Queries to add to server
                 <Select
-                    showSearch
-                    style={{ width: 200 }}
-                    placeholder="Select a person"
-                    optionFilterProp="children"
-                    onChange={onChange}
-                    onFocus={onFocus}
-                    onBlur={onBlur}
-                    onSearch={onSearch}
-                    filterOption={(input, option) =>
-                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    }
+                    mode="multiple"
+                    allowClear
+                    style={{ width: '100%' }}
+                    placeholder="Please select"
+                    defaultValue={(mySqlQueries).map((item) => {
+                        return item.id
+                    })}
+                    onChange={() =>handleChange()}
                 >
-                    <Option value="jack">Jack</Option>
-                    <Option value="lucy">Lucy</Option>
-                    <Option value="tom">Tom</Option>
+                    {(mySqlQueries).map((item) => {
+                        return (
+                            <Select.Option value={item.id} key={item.id}>
+                                {item.name}
+                            </Select.Option>
+                        );
+                    })}
                 </Select>
+
                 <Table
-                    dataSource={mysqlQueries}
+                    dataSource={(mySqlQueries).filter((item) => {
+                        if(item.id === 2) return true;
+                    })}
                     columns={columns}
                     loading={loading}
                 />
