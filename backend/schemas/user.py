@@ -3,9 +3,15 @@ from pydantic import BaseModel
 class UserBase(BaseModel):
     email: str
 
+    class Config:
+        orm_mode = True
+
 class User(UserBase):
     first_name: str
     last_name: str
+
+    class Config:
+        orm_mode = True
 
 # Properties to receive on user creation
 class UserCreate(User):
