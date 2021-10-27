@@ -25,6 +25,6 @@ class Server(Base):
     date_updated = Column(DateTime, nullable=True, onupdate=func.now())
     owner_account_id = Column(BigInteger, ForeignKey("account.id"))
     
-    queries = relationship("MySQLQueryServerAssigned", back_populates="servers")
+    queries = relationship("MySQLQueryServerAssignment", back_populates="servers")
     owner = relationship("Account", back_populates="servers")
     

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
-import { Table, Modal, Button, Form, Input, Card, Space, Tabs, message } from "antd";
+import { Table, Modal, Button, Form, Input, Card, Space, Tabs, Select, message } from "antd";
 import { getMysqlQueries } from "../../actions";
 
 const { TabPane } = Tabs;
-
+const { Option } = Select;
 
 const SingleServerManagementPage = () => {
     const [loading, setLoading] = useState(false);
@@ -25,10 +25,10 @@ const SingleServerManagementPage = () => {
             key: "action",
             title: "Action",
             render: (record) => (
-                <a onClick={()=> executeMysqlQuery(record.id)}> Execute Query </a>
-                
+                <a onClick={() => executeMysqlQuery(record.id)}> Execute Query </a>
+
             ),
-          },
+        },
     ];
 
     function executeMysqlQuery(mysqlQueryId) {
@@ -45,9 +45,25 @@ const SingleServerManagementPage = () => {
         });
     }
 
+    function onChange(value) {
+        console.log(`selected ${value}`);
+    }
+
+    function onBlur() {
+        console.log('blur');
+    }
+
+    function onFocus() {
+        console.log('focus');
+    }
+
+    function onSearch(val) {
+        console.log('search:', val);
+    }
+
     useEffect(() => {
         listAllMysqlQueries();
-      }, []);
+    }, []);
 
     return (
         <Tabs defaultActiveKey="1" centered>
@@ -59,6 +75,23 @@ const SingleServerManagementPage = () => {
             </TabPane>
             <TabPane tab="MySQL Queries" key="3">
                 Custom MySQL Queries
+                <Select
+                    showSearch
+                    style={{ width: 200 }}
+                    placeholder="Select a person"
+                    optionFilterProp="children"
+                    onChange={onChange}
+                    onFocus={onFocus}
+                    onBlur={onBlur}
+                    onSearch={onSearch}
+                    filterOption={(input, option) =>
+                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
+                >
+                    <Option value="jack">Jack</Option>
+                    <Option value="lucy">Lucy</Option>
+                    <Option value="tom">Tom</Option>
+                </Select>
                 <Table
                     dataSource={mysqlQueries}
                     columns={columns}
