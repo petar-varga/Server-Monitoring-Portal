@@ -42,11 +42,11 @@ async def get_and_wait_sql_query_result(
 
     # get server info
     server = crud.server.get_single_for_account_owner(
-        db, owner_id=current_user_fresh.account_id, 
+        db, owner_id=current_user.account_id, 
         id=server_id)
     # get mysql query
     mysql_query = crud.mysql_query.get_single_for_account_owner(
-        db, owner_id=current_user_fresh.account_id,
+        db, owner_id=current_user.account_id,
         id=mysql_query_id
     )
     start_time = time.time()

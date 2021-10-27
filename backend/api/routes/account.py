@@ -25,8 +25,7 @@ async def get_account_info(
         current_user: UserInDB = Depends(get_current_active_user),
         db: Session = Depends(get_db),
     ):
-    current_user_fresh = crud.user.get(db, id=current_user.id)
-    account_info = crud.account.get(db, id = current_user_fresh.account_id)
+    account_info = crud.account.get(db, id = current_user.account_id)
 
     return account_info
 

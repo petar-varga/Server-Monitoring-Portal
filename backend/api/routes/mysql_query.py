@@ -27,10 +27,9 @@ async def get_sql_query_details(
         current_user: UserInDB = Depends(get_current_active_user),
         db: Session = Depends(get_db),
     ):
-    current_user_fresh = crud.user.get(db, id=current_user.id)
 
     account_info = crud.mysql_query.get_single_for_account_owner(
-        db, owner_id=current_user_fresh.account_id,
+        db, owner_id=current_user.account_id,
         id=mysql_query_id
     )
 
@@ -51,10 +50,9 @@ async def add_mysql_query(
         current_user: UserInDB = Depends(get_current_active_user),
         db: Session = Depends(get_db)
     ):
-    account_id=crud.user.get(db, id=current_user.id).account_id
     addition_data = MySQLQueryCreateAccountOwner(
         **addition_data.dict(), 
-        account_id=account_id
+        account_id=current_user.account_id
     )
     mysql_query = crud.mysql_query.create_for_account_owner(
         db=db, obj_in=addition_data
