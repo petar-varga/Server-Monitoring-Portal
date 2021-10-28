@@ -10,8 +10,8 @@ class MySQLQueryServerAssignmentBase(BaseModel):
         orm_mode = True
 
 class MySQLQueryServerAssignmentCreation(MySQLQueryServerAssignmentBase):
-    name: str
-    notes: str
+    name: str = None
+    notes: str = None
 
 class MySQLQueryServerLastResult(MySQLQueryServerAssignmentCreation):
     query_result: str = None

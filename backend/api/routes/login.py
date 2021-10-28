@@ -11,10 +11,11 @@ from fastapi.security import OAuth2PasswordRequestForm
 from starlette.status import HTTP_403_FORBIDDEN
 from starlette.responses import RedirectResponse, Response, JSONResponse
 from starlette.requests import Request
+from sqlalchemy.orm import Session
 
 # importing custom dependencies
 from api.deps import pwd_context, oauth2_scheme, basic_auth
-from api.deps import get_current_active_user
+from api.deps import get_current_active_user, get_db
 
 from core.cookie_auth_session import BasicAuth
 
@@ -24,8 +25,8 @@ router = APIRouter()
 
 
 @router.post("/login", response_model=Token)
-async def login_jwt(login_data: LoginCheck, response: Response):
-    user = authenticate_user(login_data.email, login_data.password)
+async def login_jwt(login_data: LoginCheck, response: Response, db: Session = Depends(get_db)):
+    user = authenticate_user(db, login_data.email, login_data.password)
     if not user:
         raise HTTPException(status_code=400, detail={'error': 'Incorrect email or password'})
     access_token = create_access_token(

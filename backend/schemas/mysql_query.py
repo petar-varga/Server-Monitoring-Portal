@@ -24,6 +24,13 @@ class MySQLQueryList(MySQLQuery):
     class Config:
         orm_mode = True
 
+class MySQLQueryListAssigned(MySQLQuery):
+    id: int
+    is_assigned: bool
+
+    class Config:
+        orm_mode = True
+
 class MySQLQueryCreateAccountOwner(MySQLQueryCreate):
     account_id: int
 

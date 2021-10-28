@@ -5,7 +5,7 @@ import json
 import crud
 import models
 
-from schemas.mysql_query import MySQLQueryCreateAccountOwner, MySQLQueryCreate, MySQLQuery, MySQLQueryList
+from schemas.mysql_query import MySQLQueryCreateAccountOwner, MySQLQueryCreate, MySQLQuery, MySQLQueryList, MySQLQueryListAssigned
 
 from schemas.user import UserInDB
 
@@ -41,6 +41,24 @@ async def list_mysql_queries(
         db: Session = Depends(get_db),
     ):
     mysql_queries = crud.mysql_query.get_all_for_account_owner(db, current_user.account_id)
+
+    return mysql_queries
+
+@router.get("/list-server-assignment", response_model=List[MySQLQueryListAssigned])
+async def list_mysql_queries_with_assignment(
+        server_id: int,
+        current_user: UserInDB = Depends(get_current_active_user),
+        db: Session = Depends(get_db),
+    ):
+    assigned_mysql_queries = crud.server.get_single_for_account_owner(
+        db, current_user.account_id, server_id
+    ).queries
+    assigned_mysql_queries_ids = [x.mysql_query_id for x in assigned_mysql_queries]
+
+    mysql_queries: List[MySQLQueryListAssigned] = crud.mysql_query.get_all_for_account_owner(db, current_user.account_id)
+
+    for mysql_query in mysql_queries:
+        mysql_query.is_assigned = True if mysql_query.id in assigned_mysql_queries_ids else False
 
     return mysql_queries
 

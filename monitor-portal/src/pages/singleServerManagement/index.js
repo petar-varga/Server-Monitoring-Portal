@@ -9,7 +9,7 @@ const { Option } = Select;
 
 const SingleServerManagementPage = () => {
     const [loading, setLoading] = useState(false);
-    const [mySqlQueries, setmySqlQueries] = useState([]);
+    const [mySqlQueries, setMySqlQueries] = useState([]);
 
     const params = useParams();
     const { serverId } = params;
@@ -41,16 +41,20 @@ const SingleServerManagementPage = () => {
 
     function listAllMysqlQueries() {
         setLoading(true);
-        const params = "";
-        getMysqlQueries(params).then((response) => {
+        getMysqlQueries(serverId).then((response) => {
             const { data } = response;
             setLoading(false);
-            setmySqlQueries(data);
+            setMySqlQueries(data);
         });
     }
 
-    function handleChange(value) {
-        console.log(`selected ${value}`);
+    function handleChange(values) {
+
+        var updatedListOfQueries = mySqlQueries;
+        updatedListOfQueries.forEach((value, index) => {
+            updatedListOfQueries[index].is_assigned = values.includes(value.id)
+        });
+        setMySqlQueries([...updatedListOfQueries]);
     }
 
     useEffect(() => {
@@ -66,29 +70,32 @@ const SingleServerManagementPage = () => {
                 Generic server health metrics
             </TabPane>
             <TabPane tab="MySQL Queries" key="3">
-                Select Desired Queries to add to server
+                {/* Select Desired Queries to add to server
                 <Select
                     mode="multiple"
                     allowClear
                     style={{ width: '100%' }}
                     placeholder="Please select"
-                    defaultValue={(mySqlQueries).map((item) => {
-                        return item.id
+                    defaultValue={(mySqlQueries).filter((item) => {
+                        return item.is_assigned;
+                    }).map((item) => {
+                        return item.id;
                     })}
-                    onChange={() =>handleChange()}
+                    onChange={(values) => handleChange(values)}
                 >
-                    {(mySqlQueries).map((item) => {
+                    {mySqlQueries.map((item) => {
                         return (
                             <Select.Option value={item.id} key={item.id}>
-                                {item.name}
+                                {item.name + " " + item.is_assigned}
                             </Select.Option>
                         );
                     })}
-                </Select>
+                </Select> */}
 
                 <Table
+                    rowKey={(query) => query.id}
                     dataSource={(mySqlQueries).filter((item) => {
-                        if(item.id === 2) return true;
+                        return item.is_assigned;
                     })}
                     columns={columns}
                     loading={loading}
