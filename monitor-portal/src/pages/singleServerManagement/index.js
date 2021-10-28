@@ -26,6 +26,21 @@ const SingleServerManagementPage = () => {
             key: 'sql_query',
         },
         {
+            title: 'Assignment Title',
+            dataIndex: 'assignment_name',
+            key: 'assignment_name',
+        },
+        {
+            title: 'Notes',
+            dataIndex: 'notes',
+            key: 'notes',
+        },
+        {
+            title: 'Last Query Result',
+            dataIndex: 'query_result',
+            key: 'query_result',
+        },
+        {
             key: "action",
             title: "Action",
             render: (record) => (
@@ -49,7 +64,6 @@ const SingleServerManagementPage = () => {
     }
 
     function handleChange(values) {
-
         var updatedListOfQueries = mySqlQueries;
         updatedListOfQueries.forEach((value, index) => {
             updatedListOfQueries[index].is_assigned = values.includes(value.id)
@@ -86,20 +100,33 @@ const SingleServerManagementPage = () => {
                     {mySqlQueries.map((item) => {
                         return (
                             <Select.Option value={item.id} key={item.id}>
-                                {item.name + " " + item.is_assigned}
+                                {item.name + " " + item.is_assig"ned}
                             </Select.Option>
                         );
                     })}
                 </Select> */}
-
-                <Table
-                    rowKey={(query) => query.id}
-                    dataSource={(mySqlQueries).filter((item) => {
-                        return item.is_assigned;
-                    })}
-                    columns={columns}
-                    loading={loading}
-                />
+                <Card
+                    className="no-padding"
+                    title={
+                        <p className="text-5xl font-bold secondary-font secondary mb-4">
+                            {"MySQL Queries: " + serverId}
+                        </p>
+                    }
+                    extra={
+                        <Space>
+                            <Button type="primary">Add MySQL Query</Button>
+                        </Space>
+                    }
+                >
+                    <Table
+                        rowKey={(query) => query.id}
+                        dataSource={(mySqlQueries).filter((item) => {
+                            return item.is_assigned;
+                        })}
+                        columns={columns}
+                        loading={loading}
+                    />
+                </Card>
             </TabPane>
             <TabPane tab="Alerts" key="4">
                 Server Alerts setup and configuration

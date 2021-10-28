@@ -4,8 +4,9 @@ import json
 
 import crud
 import models
+from models.mysql_query_server_assignment import MySQLQueryServerAssignment
 
-from schemas.mysql_query import MySQLQueryCreateAccountOwner, MySQLQueryCreate, MySQLQuery, MySQLQueryList, MySQLQueryListAssigned
+from schemas.mysql_query import MySQLQueryCreateAccountOwner, MySQLQueryCreate, MySQLQuery, MySQLQueryList, MySQLQueryAssignedList
 
 from schemas.user import UserInDB
 
@@ -44,21 +45,30 @@ async def list_mysql_queries(
 
     return mysql_queries
 
-@router.get("/list-server-assignment", response_model=List[MySQLQueryListAssigned])
+@router.get("/list-server-assignment", response_model=List[MySQLQueryAssignedList])
 async def list_mysql_queries_with_assignment(
         server_id: int,
         current_user: UserInDB = Depends(get_current_active_user),
         db: Session = Depends(get_db),
     ):
-    assigned_mysql_queries = crud.server.get_single_for_account_owner(
+    assigned_mysql_queries: List[MySQLQueryServerAssignment] = crud.server.get_single_for_account_owner(
         db, current_user.account_id, server_id
     ).queries
+    
     assigned_mysql_queries_ids = [x.mysql_query_id for x in assigned_mysql_queries]
 
-    mysql_queries: List[MySQLQueryListAssigned] = crud.mysql_query.get_all_for_account_owner(db, current_user.account_id)
-
+    mysql_queries: List[MySQLQueryAssignedList] = crud.mysql_query.get_all_for_account_owner(db, current_user.account_id)
     for mysql_query in mysql_queries:
-        mysql_query.is_assigned = True if mysql_query.id in assigned_mysql_queries_ids else False
+        if mysql_query.id in assigned_mysql_queries_ids:
+            for assigned_query in assigned_mysql_queries:
+                if assigned_query.mysql_query_id == mysql_query.id:
+                    mysql_query.is_assigned = True
+                    mysql_query.assignment_name = assigned_query.name
+                    mysql_query.notes = assigned_query.notes
+                    mysql_query.query_result = assigned_query.query_result
+                    break
+        else:
+            mysql_query.is_assigned = False
 
     return mysql_queries
 

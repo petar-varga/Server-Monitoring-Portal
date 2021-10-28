@@ -24,9 +24,12 @@ class MySQLQueryList(MySQLQuery):
     class Config:
         orm_mode = True
 
-class MySQLQueryListAssigned(MySQLQuery):
+class MySQLQueryAssignedList(MySQLQuery):
     id: int
     is_assigned: bool
+    assignment_name: str = None
+    notes: str = None
+    query_result: str = None
 
     class Config:
         orm_mode = True
