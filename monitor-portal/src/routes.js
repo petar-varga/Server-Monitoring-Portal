@@ -22,8 +22,9 @@ const SingleServerManagementComponent = React.lazy(() =>
 );
 
 export const INDEX_ROUTE = "/";
-export const SERVERS_ROUTE = "/servers";
-export const SERVER_ROUTE = `/server/:serverId/`;
+export const SERVER_MANAGEMENT_ROUTE = "/servers-management";
+export const SERVERS_ROUTE = `${SERVER_MANAGEMENT_ROUTE}/servers`;
+export const SERVER_ROUTE = `${SERVER_MANAGEMENT_ROUTE}/server/:serverId/`;
 
 export const getSingleServerManagementRoute = (serverId) => {
   return SERVER_ROUTE.replace(":serverId", serverId);

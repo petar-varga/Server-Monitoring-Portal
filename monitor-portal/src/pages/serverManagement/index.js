@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link, useHistory } from "react-router-dom";
 import { Table, Modal, Button, Form, Input, Card, Space, message } from "antd";
 
 import { getInstances, addServer } from "../../actions";
@@ -34,6 +35,13 @@ const ServerManagementPage = () => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
+    },
+    {
+      key: "action",
+      title: "Action",
+      render: (record) => (
+        <Link to={"server/" + record.id}> Manage </Link>
+      )
     },
   ];
 
