@@ -30,7 +30,7 @@ const SingleServerManagementPage = () => {
             dataIndex: 'assignment_name',
             key: 'assignment_name',
         },
-        {
+        {   
             title: 'Notes',
             dataIndex: 'notes',
             key: 'notes',
