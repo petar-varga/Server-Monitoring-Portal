@@ -17,7 +17,7 @@ config = context.config
 # ---------------- added code here -------------------------#
 # this will overwrite the ini-file sqlalchemy.url path
 # with the path given in the config of the main code
-config.set_main_option("sqlalchemy.url", f'mysql://root:@localhost:3307/server_management_portal')
+config.set_main_option("sqlalchemy.url", f'mysql://root:@localhost:3306/server_management_portal')
 #------------------------------------------------------------#
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.

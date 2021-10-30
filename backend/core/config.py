@@ -44,7 +44,7 @@ class Settings(BaseSettings):
     def assemble_db_connection(cls, v: Optional[str], values: Dict[str, Any]) -> str:
         if not v:
             # TODO: HARDCODE FIX, UNCOMMENT TO USE ACTUAL VALUES
-            return f'mysql://root:@localhost:3307/server_management_portal'
+            #return f'mysql://root:@localhost:3307/server_management_portal'
             return f'mysql://{values["MYSQL_USER"]}:{values["MYSQL_PASSWORD"]}@{values["MYSQL_SERVER"]}/{values["MYSQL_DB"]}'
         return v
 
