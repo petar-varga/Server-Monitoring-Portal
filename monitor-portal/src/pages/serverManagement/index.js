@@ -3,14 +3,13 @@ import { Link, useHistory } from "react-router-dom";
 import { Table, Modal, Button, Form, Input, Card, Space, message } from "antd";
 
 import { getInstances, addServer } from "../../actions";
+import AddServerModal from "./addServerModal"
 
 const ServerManagementPage = () => {
   const [instances, setInstances] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const [form] = Form.useForm();
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [sourceAdding, setSourceAdding] = useState(false);
+  const [isAddServerModalVisible, setIsAddServerModalVisible] = useState(false);
 
   const columns = [
     {
@@ -46,28 +45,8 @@ const ServerManagementPage = () => {
   ];
 
   const showModal = () => {
-    setIsModalVisible(true);
+    setIsAddServerModalVisible(true);
   };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-
-  function onSubmit(values) {
-    setSourceAdding(true);
-    addServer(values)
-      .then((response) => {
-        setSourceAdding(false);
-        setIsModalVisible(false);
-        getList();
-        form.resetFields();
-        console.log(response);
-      })
-      .catch((err) => {
-        setSourceAdding(false);
-        message.error(err.response.data.detail.error);
-      });
-  }
 
   function getList(page = 1) {
     setLoading(true);
@@ -114,50 +93,11 @@ const ServerManagementPage = () => {
         />
       </Card>
 
-      {/* TODO: Extract this to a separate component */}
-      <Modal
-        title="Add server instance"
-        okText="Add"
-        cancelText="Close"
-        visible={isModalVisible}
-        onOk={() => form.submit()}
-        onCancel={() => handleCancel()}
-        confirmLoading={sourceAdding}
-      >
-        <Form
-          form={form}
-          onFinish={(values) => onSubmit(values)}
-        >
-          <Form.Item
-            name="name"
-            rules={[
-              {
-                required: true,
-                message: "Please input server name!",
-              },
-            ]}
-          >
-            <Input
-              size="middle"
-              placeholder="Server Name"
-            />
-          </Form.Item>
-          <Form.Item
-            name="ip"
-            rules={[
-              {
-                required: true,
-                message: "Please input server IP!",
-              },
-            ]}
-          >
-            <Input
-              size="middle"
-              placeholder="Server IP"
-            />
-          </Form.Item>
-        </Form>
-      </Modal>
+      <AddServerModal
+        isModalVisible={isAddServerModalVisible}
+        getList={getList}
+        setIsModalVisible={setIsAddServerModalVisible}
+      />
     </div>
   );
 };

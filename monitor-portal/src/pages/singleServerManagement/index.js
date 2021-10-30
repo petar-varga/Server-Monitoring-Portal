@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { Link, useHistory } from "react-router-dom";
 import { Table, Modal, Button, Form, Input, Card, Space, Tabs, Select, message } from "antd";
-import { getMysqlQueries, getSingleServer } from "../../actions";
+import { getMysqlQueries, getSingleServer, addMysqlQuery } from "../../actions";
+import AddMySQLQueryModal from "./addMySQLQueryModal"
 
 const { TabPane } = Tabs;
 const { Option } = Select;
@@ -11,6 +12,12 @@ const SingleServerManagementPage = () => {
     const [loading, setLoading] = useState(false);
     const [mySqlQueries, setMySqlQueries] = useState([]);
     const [serverDetails, setServerDetails] = useState(null);
+
+    const [isAddMysqlQueryModalVisible, setIsAddMysqlQueryModalVisible] = useState(false);
+
+    const showModal = () => {
+        setIsAddMysqlQueryModalVisible(true);
+    };
 
     const params = useParams();
     const { serverId } = params;
@@ -97,7 +104,7 @@ const SingleServerManagementPage = () => {
                     Generic server health metrics
                 </TabPane>
                 <TabPane tab="MySQL Queries" key="3">
-                    {/* Select Desired Queries to add to server
+                    Select Desired Queries to add to server
                     <Select
                         mode="multiple"
                         allowClear
@@ -113,11 +120,11 @@ const SingleServerManagementPage = () => {
                         {mySqlQueries.map((item) => {
                             return (
                                 <Select.Option value={item.id} key={item.id}>
-                                    {item.name + " " + item.is_assig"ned}
+                                    {item.name + " " + item.is_assigned}
                                 </Select.Option>
                             );
                         })}
-                    </Select> */}
+                    </Select>
                     <Card
                         className="no-padding"
                         title={
@@ -127,7 +134,18 @@ const SingleServerManagementPage = () => {
                         }
                         extra={
                             <Space>
-                                <Button type="primary">Add MySQL Query</Button>
+                                <Button 
+                                    type="primary"
+                                    onClick={() => showModal()}
+                                >
+                                    Add MySQL Query
+                                </Button>
+                                <Button 
+                                    type="primary"
+                                    onClick={() => showModal()}
+                                >
+                                    Assign MySQL Query
+                                </Button>
                             </Space>
                         }
                     >
@@ -140,6 +158,11 @@ const SingleServerManagementPage = () => {
                             loading={loading}
                         />
                     </Card>
+                    <AddMySQLQueryModal
+                        isModalVisible={isAddMysqlQueryModalVisible}
+                        listAllMysqlQueries={listAllMysqlQueries}
+                        setIsModalVisible={setIsAddMysqlQueryModalVisible}
+                    />
                 </TabPane>
                 <TabPane tab="Alerts" key="4">
                     Server Alerts setup and configuration

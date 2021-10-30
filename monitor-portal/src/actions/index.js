@@ -75,3 +75,8 @@ export const getMysqlQueries = (queryString) => {
   let path = endpoints.ALL_MYSQL_QUERIES_API_PATH.replace("{}", queryString);
   return instance.get(path);
 };
+
+export const addMysqlQuery = (payload) => {
+  let path = endpoints.ADD_MYSQL_QUERIES_API_PATH;
+  return instance.post(path, payload);
+};
