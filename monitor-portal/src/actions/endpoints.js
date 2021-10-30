@@ -10,6 +10,9 @@ export const MYSQL_QUERIES_API_PATH = "mysql-query";
 export const ALL_MYSQL_QUERIES_API_PATH = `${MYSQL_QUERIES_API_PATH}/list-server-assignment?server_id={}`;
 export const ADD_MYSQL_QUERIES_API_PATH = `${MYSQL_QUERIES_API_PATH}/add`;
 
+export const MYSQL_QUERY_ASSIGNMENT_API_PATH = "mysql-query-server";
+export const ASSIGN_MYSQL_QUERY_API_PATH = `${MYSQL_QUERY_ASSIGNMENT_API_PATH}/add`;
+
 export const USERS_API_PATH = "users/";
 export const USERS_DETAIL_API_PATH = `${USERS_API_PATH}{}/`;
 

@@ -1,28 +1,30 @@
 import { useEffect, useState } from "react";
-import { Modal, Form, Input, message } from "antd";
-import { addMysqlQuery } from "../../../actions";
+import { Modal, Form, Input, Select, message } from "antd";
+import { assignMysqlQuery } from "../../../actions";
 
-const AddMySQLQueryModal = ({ isModalVisible, listAllMysqlQueries, setIsModalVisible }) => {
+const AddMySQLQueryAssignmentModal = ({ isModalVisible, listAllMysqlQueries, setIsModalVisible, serverId, mySqlQueries }) => {
 
   const [form] = Form.useForm();
-  const [mysqlAdding, setMysqlAdding] = useState(false);
+  const [mysqlAssignmentAdding, setMysqlAssignmentAdding] = useState(false);
 
   const handleCancel = () => {
     setIsModalVisible(false);
   };
 
   const onSubmit = (values) => {
-    setMysqlAdding(true);
-    addMysqlQuery(values)
+    setMysqlAssignmentAdding(true);
+    values["server_id"] = serverId;
+    values["mysql_password"] = values["mysql_password"] === undefined ? "" : values["mysql_password"];
+    assignMysqlQuery(values)
       .then((response) => {
-        setMysqlAdding(false);
+        setMysqlAssignmentAdding(false);
         setIsModalVisible(false);
         listAllMysqlQueries();
         form.resetFields();
         console.log(response);
       })
       .catch((err) => {
-        setMysqlAdding(false);
+        setMysqlAssignmentAdding(false);
         message.error(err.response.data.detail.error);
       });
   }
@@ -30,49 +32,76 @@ const AddMySQLQueryModal = ({ isModalVisible, listAllMysqlQueries, setIsModalVis
   useEffect(() => {
     if (isModalVisible) {
       setIsModalVisible(true);
+      form.setFieldsValue({
+        mysql_port: "3306"
+     });
     }
   }, [isModalVisible]);
 
   return (
     <Modal
-      title="Add MySQL Query"
+      title="Add MySQL Query Assignment For This Server"
       okText="Add"
       cancelText="Close"
       visible={isModalVisible}
       onOk={() => form.submit()}
       onCancel={() => handleCancel()}
-      confirmLoading={mysqlAdding}
+      confirmLoading={mysqlAssignmentAdding}
     >
       <Form
         form={form}
         onFinish={(values) => onSubmit(values)}
       >
         <Form.Item
+          name="mysql_query_id"
+          rules={[
+            {
+              required: true,
+              message: "Please select the MySQL Query to Assign to this Server!",
+            },
+          ]}
+        >
+          <Select
+            mode="single"
+            allowClear
+            style={{ width: '100%' }}
+            placeholder="Select the MySQL Query to Assign to this Server"
+          >
+            {mySqlQueries.map((item) => {
+              return (
+                <Select.Option value={item.id} key={item.id}>
+                  {item.name }
+                </Select.Option>
+              );
+            })}
+          </Select>
+        </Form.Item>
+        <Form.Item
           name="name"
           rules={[
             {
               required: true,
-              message: "Please input descriptive MySQL name!",
+              message: "Please input descriptive assignment name!",
             },
           ]}
         >
           <Input
             size="middle"
-            placeholder="MySQL query name"
+            placeholder="Assignment name"
           />
         </Form.Item>
         <Form.Item
-          name="sql_query"
+          name="notes"
           rules={[
             {
-              required: true,
-              message: "Please input MySQL Query!",
+              message: "Please input descriptive assignment notes!",
             },
           ]}
         >
           <Input.TextArea
             size="middle"
-            placeholder="Enter MySQL Query to execute"
+            placeholder="Assignment notes"
+
           />
         </Form.Item>
         <Form.Item
@@ -91,16 +120,11 @@ const AddMySQLQueryModal = ({ isModalVisible, listAllMysqlQueries, setIsModalVis
         </Form.Item>
         <Form.Item
           name="mysql_password"
-          rules={[
-            {
-              required: true,
-              message: "Please input MySQL Password!",
-            },
-          ]}
         >
           <Input.Password
             size="middle"
-            placeholder="Enter MySQL Password for query execution"
+            autoComplete="new-password"
+            placeholder="Enter MySQL Password for query execution (Default is empty string: '')"
           />
         </Form.Item>
         <Form.Item
@@ -119,17 +143,10 @@ const AddMySQLQueryModal = ({ isModalVisible, listAllMysqlQueries, setIsModalVis
         </Form.Item>
         <Form.Item
           name="mysql_port"
-          rules={[
-            {
-              required: true,
-              message: "Please input MySQL Port!",
-            },
-          ]}
         >
           <Input
             size="middle"
             placeholder="Enter MySQL Port for query execution"
-            value={"3306"}
           />
         </Form.Item>
         <Form.Item
@@ -151,4 +168,4 @@ const AddMySQLQueryModal = ({ isModalVisible, listAllMysqlQueries, setIsModalVis
   );
 };
 
-export default AddMySQLQueryModal;
+export default AddMySQLQueryAssignmentModal;

@@ -4,6 +4,7 @@ import { Link, useHistory } from "react-router-dom";
 import { Table, Modal, Button, Form, Input, Card, Space, Tabs, Select, message } from "antd";
 import { getMysqlQueries, getSingleServer, addMysqlQuery } from "../../actions";
 import AddMySQLQueryModal from "./addMySQLQueryModal"
+import AddMySQLQueryAssignmentModal from "./addMySQLQueryAssignmentModal"
 
 const { TabPane } = Tabs;
 const { Option } = Select;
@@ -14,9 +15,14 @@ const SingleServerManagementPage = () => {
     const [serverDetails, setServerDetails] = useState(null);
 
     const [isAddMysqlQueryModalVisible, setIsAddMysqlQueryModalVisible] = useState(false);
+    const [isAddMysqlQueryAssignmentModalVisible, setIsAddMysqlQueryAssignmentModalVisible] = useState(false);
 
-    const showModal = () => {
+    const showAddMySQLQueryModal = () => {
         setIsAddMysqlQueryModalVisible(true);
+    };
+
+    const showAddMySQLQueryAssignmentModal = () => {
+        setIsAddMysqlQueryAssignmentModalVisible(true);
     };
 
     const params = useParams();
@@ -136,13 +142,13 @@ const SingleServerManagementPage = () => {
                             <Space>
                                 <Button 
                                     type="primary"
-                                    onClick={() => showModal()}
+                                    onClick={() => showAddMySQLQueryModal()}
                                 >
                                     Add MySQL Query
                                 </Button>
                                 <Button 
                                     type="primary"
-                                    onClick={() => showModal()}
+                                    onClick={() => showAddMySQLQueryAssignmentModal()}
                                 >
                                     Assign MySQL Query
                                 </Button>
@@ -162,6 +168,13 @@ const SingleServerManagementPage = () => {
                         isModalVisible={isAddMysqlQueryModalVisible}
                         listAllMysqlQueries={listAllMysqlQueries}
                         setIsModalVisible={setIsAddMysqlQueryModalVisible}
+                    />
+                    <AddMySQLQueryAssignmentModal
+                        isModalVisible={isAddMysqlQueryAssignmentModalVisible}
+                        listAllMysqlQueries={listAllMysqlQueries}
+                        setIsModalVisible={setIsAddMysqlQueryAssignmentModalVisible}
+                        serverId={serverId}
+                        mySqlQueries={mySqlQueries}
                     />
                 </TabPane>
                 <TabPane tab="Alerts" key="4">

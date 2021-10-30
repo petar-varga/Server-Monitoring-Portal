@@ -2,16 +2,18 @@ from typing import List
 import requests
 import json
 
+import sqlalchemy
+
 import crud
 import models
 from models.mysql_query_server_assignment import MySQLQueryServerAssignment
 
 from schemas.mysql_query import MySQLQueryCreateAccountOwner, MySQLQueryCreate, MySQLQuery, MySQLQueryList
-from schemas.mysql_query_server_assignment import MySQLQueryServerAllData, MySQLQueryServerAssignmentCreation
+from schemas.mysql_query_server_assignment import MySQLQueryServerAllData, MySQLQueryServerAssignmentBase, MySQLQueryServerAssignmentCreation
 
 from schemas.user import UserInDB
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 # importing custom dependencies
@@ -49,7 +51,7 @@ async def list_mysql_queries_for_server(
 
     return mysql_queries
 
-@router.post("/add", response_model=MySQLQueryServerAssignmentCreation)
+@router.post("/add", response_model=MySQLQueryServerAssignmentBase)
 async def add_mysql_query_to_server(
         addition_data: MySQLQueryServerAssignmentCreation,
         current_user: UserInDB = Depends(get_current_active_user),
@@ -65,7 +67,13 @@ async def add_mysql_query_to_server(
     server.queries.append(assignment)
 
     db.add(server)
-    db.commit()
-    db.refresh(assignment)
+    
+    try:
+        db.commit()
+    except sqlalchemy.exc.IntegrityError:
+        raise HTTPException(500, detail={
+            "error": "Duplicate MySQL Query assignments for same server are not allowed!"
+        })
 
+    db.refresh(assignment)
     return assignment

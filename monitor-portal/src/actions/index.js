@@ -80,3 +80,8 @@ export const addMysqlQuery = (payload) => {
   let path = endpoints.ADD_MYSQL_QUERIES_API_PATH;
   return instance.post(path, payload);
 };
+
+export const assignMysqlQuery = (payload) => {
+  let path = endpoints.ASSIGN_MYSQL_QUERY_API_PATH;
+  return instance.post(path, payload);
+};

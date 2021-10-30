@@ -7,6 +7,11 @@ class ServerBase(BaseModel):
 # Properties to receive on server creation
 class ServerCreate(ServerBase):
     ip: str
+    mysql_username: str
+    mysql_password: str
+    mysql_host: str
+    mysql_port: str = 3306
+    mysql_database: str
     # can be supplied - will be overriden to actual 
     # account owner for user that creates it
     owner_account_id: str = None

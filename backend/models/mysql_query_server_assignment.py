@@ -10,6 +10,11 @@ class MySQLQueryServerAssignment(Base):
 
     name = Column(Text, nullable=True, default=None)
     notes = Column(Text, nullable=True, default=None)
+    mysql_username = Column(Text, nullable=False, default=None)
+    mysql_password = Column(Text, nullable=False, default=None)
+    mysql_host = Column(Text, nullable=False, default=None)
+    mysql_port = Column(Text, nullable=False, default="3306")
+    mysql_database = Column(Text, nullable=False, default=None)
     query_result = Column(Text, nullable=True, default=None)
     date_added = Column(DateTime, nullable=True, default=func.now())
     date_updated = Column(DateTime, nullable=True, onupdate=func.now())
