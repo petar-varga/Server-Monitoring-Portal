@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { Link, useHistory } from "react-router-dom";
 import { Table, Modal, Button, Form, Input, Card, Space, Tabs, Select, message } from "antd";
-import { getMysqlQueries, getSingleServer, addMysqlQuery } from "../../actions";
+import { getMysqlQueries, getSingleServer, executeAssignedMysqlQueryNoWait } from "../../actions";
 import AddMySQLQueryModal from "./addMySQLQueryModal"
 import AddMySQLQueryAssignmentModal from "./addMySQLQueryAssignmentModal"
 
@@ -59,13 +59,22 @@ const SingleServerManagementPage = () => {
             title: "Action",
             render: (record) => (
                 <a onClick={() => executeMysqlQuery(record.id)}> Execute Query </a>
-
             ),
         },
     ];
 
     function executeMysqlQuery(mysqlQueryId) {
-        alert(mysqlQueryId, "is query id");
+        const payload = {
+            server_id: serverId,
+            mysql_query_id: mysqlQueryId
+        }
+        executeAssignedMysqlQueryNoWait(payload)
+            .then((response) => {
+                message.success(response.data.status_display);
+            })
+            .catch((err) => {
+                message.error(err.response.data.detail.error);
+            });
     }
 
     function listAllMysqlQueries() {
@@ -75,14 +84,6 @@ const SingleServerManagementPage = () => {
             setLoading(false);
             setMySqlQueries(data);
         });
-    }
-
-    function handleChange(values) {
-        var updatedListOfQueries = mySqlQueries;
-        updatedListOfQueries.forEach((value, index) => {
-            updatedListOfQueries[index].is_assigned = values.includes(value.id)
-        });
-        setMySqlQueries([...updatedListOfQueries]);
     }
 
     function loadServerDetails() {
@@ -101,36 +102,15 @@ const SingleServerManagementPage = () => {
 
     return (
         <>
-            <h1>{serverDetails != null ? serverDetails.name : ""}</h1>
-            <Tabs defaultActiveKey="1" centered>
+            <h1>{serverDetails != null ? serverDetails.name : "Server Details"}</h1>
+            <Tabs defaultActiveKey="3" centered>
                 <TabPane tab="Overview" key="1">
                     Contents of generic overview
                 </TabPane>
                 <TabPane tab="Health" key="2">
                     Generic server health metrics
                 </TabPane>
-                <TabPane tab="MySQL Queries" key="3">
-                    Select Desired Queries to add to server
-                    <Select
-                        mode="multiple"
-                        allowClear
-                        style={{ width: '100%' }}
-                        placeholder="Please select"
-                        defaultValue={(mySqlQueries).filter((item) => {
-                            return item.is_assigned;
-                        }).map((item) => {
-                            return item.id;
-                        })}
-                        onChange={(values) => handleChange(values)}
-                    >
-                        {mySqlQueries.map((item) => {
-                            return (
-                                <Select.Option value={item.id} key={item.id}>
-                                    {item.name + " " + item.is_assigned}
-                                </Select.Option>
-                            );
-                        })}
-                    </Select>
+                <TabPane tab="MySQL Queries" key="3" active>
                     <Card
                         className="no-padding"
                         title={
@@ -140,13 +120,13 @@ const SingleServerManagementPage = () => {
                         }
                         extra={
                             <Space>
-                                <Button 
+                                <Button
                                     type="primary"
                                     onClick={() => showAddMySQLQueryModal()}
                                 >
                                     Add MySQL Query
                                 </Button>
-                                <Button 
+                                <Button
                                     type="primary"
                                     onClick={() => showAddMySQLQueryAssignmentModal()}
                                 >

@@ -85,3 +85,8 @@ export const assignMysqlQuery = (payload) => {
   let path = endpoints.ASSIGN_MYSQL_QUERY_API_PATH;
   return instance.post(path, payload);
 };
+
+export const executeAssignedMysqlQueryNoWait = (payload) => {
+  let path = endpoints.EXECUTE_NO_WAIT_ASSIGNED_MYSQL_QUERY_API_PATH;
+  return instance.post(path, payload);
+};

@@ -11,6 +11,10 @@ class MySQLQueryServerAssignmentBase(BaseModel):
     class Config:
         orm_mode = True
 
+class MySQLQueryServerExecuteQuery(BaseModel):
+    server_id: int
+    mysql_query_id: int
+
 class MySQLQueryServerAssignmentCreation(MySQLQueryServerAssignmentBase):
     mysql_username: str
     mysql_password: str = ""
@@ -20,6 +24,14 @@ class MySQLQueryServerAssignmentCreation(MySQLQueryServerAssignmentBase):
     
 class MySQLQueryServerLastResult(MySQLQueryServerAssignmentCreation):
     query_result: str = None
+
+class MySQLQueryServerNoConnectionInfo(MySQLQueryServerAssignmentBase):
+    query_result: str = None
+    date_added: datetime = None
+    date_updated: datetime = None
+
+    class Config:
+        orm_mode = True
 
 class MySQLQueryServerAllData(MySQLQueryServerLastResult):
     date_added: datetime = None
