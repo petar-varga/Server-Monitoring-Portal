@@ -33,6 +33,18 @@ def get_vltr_instances():
 
     return json_object
 
+@router.get("/single-server", response_model=ServerListDetailsNoAccessToken)
+async def list_single_server_instance(
+        server_id: int,
+        current_user: UserInDB = Depends(get_current_active_user),
+        db: Session = Depends(get_db),
+    ):
+    server = crud.server.get_single_for_account_owner(
+        db, current_user.account_id, server_id
+    )
+
+    return server
+
 @router.get("/list", response_model=List[ServerListDetailsNoAccessToken])
 async def list_server_instances(
         current_user: UserInDB = Depends(get_current_active_user),
@@ -48,6 +60,7 @@ async def add_server_instance(
         current_user: UserInDB = Depends(get_current_active_user),
         db: Session = Depends(get_db)
     ):
+    addition_data.owner_account_id = current_user.account_id
     server = crud.server.create(
         db=db, obj_in=addition_data
     )

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { Link, useHistory } from "react-router-dom";
 import { Table, Modal, Button, Form, Input, Card, Space, Tabs, Select, message } from "antd";
-import { getMysqlQueries } from "../../actions";
+import { getMysqlQueries, getSingleServer } from "../../actions";
 
 const { TabPane } = Tabs;
 const { Option } = Select;
@@ -10,6 +10,7 @@ const { Option } = Select;
 const SingleServerManagementPage = () => {
     const [loading, setLoading] = useState(false);
     const [mySqlQueries, setMySqlQueries] = useState([]);
+    const [serverDetails, setServerDetails] = useState(null);
 
     const params = useParams();
     const { serverId } = params;
@@ -30,7 +31,7 @@ const SingleServerManagementPage = () => {
             dataIndex: 'assignment_name',
             key: 'assignment_name',
         },
-        {   
+        {
             title: 'Notes',
             dataIndex: 'notes',
             key: 'notes',
@@ -71,70 +72,83 @@ const SingleServerManagementPage = () => {
         setMySqlQueries([...updatedListOfQueries]);
     }
 
+    function loadServerDetails() {
+        setLoading(true);
+        getSingleServer(serverId).then((response) => {
+            const { data } = response;
+            setLoading(false);
+            setServerDetails(data);
+        });
+    }
+
     useEffect(() => {
+        loadServerDetails();
         listAllMysqlQueries();
     }, []);
 
     return (
-        <Tabs defaultActiveKey="1" centered>
-            <TabPane tab="Overview" key="1">
-                Contents of generic overview
-            </TabPane>
-            <TabPane tab="Health" key="2">
-                Generic server health metrics
-            </TabPane>
-            <TabPane tab="MySQL Queries" key="3">
-                {/* Select Desired Queries to add to server
-                <Select
-                    mode="multiple"
-                    allowClear
-                    style={{ width: '100%' }}
-                    placeholder="Please select"
-                    defaultValue={(mySqlQueries).filter((item) => {
-                        return item.is_assigned;
-                    }).map((item) => {
-                        return item.id;
-                    })}
-                    onChange={(values) => handleChange(values)}
-                >
-                    {mySqlQueries.map((item) => {
-                        return (
-                            <Select.Option value={item.id} key={item.id}>
-                                {item.name + " " + item.is_assig"ned}
-                            </Select.Option>
-                        );
-                    })}
-                </Select> */}
-                <Card
-                    className="no-padding"
-                    title={
-                        <p className="text-5xl font-bold secondary-font secondary mb-4">
-                            {"MySQL Queries: " + serverId}
-                        </p>
-                    }
-                    extra={
-                        <Space>
-                            <Button type="primary">Add MySQL Query</Button>
-                        </Space>
-                    }
-                >
-                    <Table
-                        rowKey={(query) => query.id}
-                        dataSource={(mySqlQueries).filter((item) => {
+        <>
+            <h1>{serverDetails != null ? serverDetails.name : ""}</h1>
+            <Tabs defaultActiveKey="1" centered>
+                <TabPane tab="Overview" key="1">
+                    Contents of generic overview
+                </TabPane>
+                <TabPane tab="Health" key="2">
+                    Generic server health metrics
+                </TabPane>
+                <TabPane tab="MySQL Queries" key="3">
+                    {/* Select Desired Queries to add to server
+                    <Select
+                        mode="multiple"
+                        allowClear
+                        style={{ width: '100%' }}
+                        placeholder="Please select"
+                        defaultValue={(mySqlQueries).filter((item) => {
                             return item.is_assigned;
+                        }).map((item) => {
+                            return item.id;
                         })}
-                        columns={columns}
-                        loading={loading}
-                    />
-                </Card>
-            </TabPane>
-            <TabPane tab="Alerts" key="4">
-                Server Alerts setup and configuration
-            </TabPane>
-            <TabPane tab="Actions" key="5">
-                Server actions
-            </TabPane>
-        </Tabs>
+                        onChange={(values) => handleChange(values)}
+                    >
+                        {mySqlQueries.map((item) => {
+                            return (
+                                <Select.Option value={item.id} key={item.id}>
+                                    {item.name + " " + item.is_assig"ned}
+                                </Select.Option>
+                            );
+                        })}
+                    </Select> */}
+                    <Card
+                        className="no-padding"
+                        title={
+                            <p className="text-5xl font-bold secondary-font secondary mb-4">
+                                {"MySQL Queries"}
+                            </p>
+                        }
+                        extra={
+                            <Space>
+                                <Button type="primary">Add MySQL Query</Button>
+                            </Space>
+                        }
+                    >
+                        <Table
+                            rowKey={(query) => query.id}
+                            dataSource={(mySqlQueries).filter((item) => {
+                                return item.is_assigned;
+                            })}
+                            columns={columns}
+                            loading={loading}
+                        />
+                    </Card>
+                </TabPane>
+                <TabPane tab="Alerts" key="4">
+                    Server Alerts setup and configuration
+                </TabPane>
+                <TabPane tab="Actions" key="5">
+                    Server actions
+                </TabPane>
+            </Tabs>
+        </>
     );
 };
 

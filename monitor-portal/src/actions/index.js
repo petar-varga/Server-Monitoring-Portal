@@ -61,6 +61,11 @@ export const getInstances = (queryString) => {
   return instance.get(path);
 };
 
+export const getSingleServer = (id) => {
+  let path = endpoints.SINGLE_SERVER_API_PATH.replace("{}", id);
+  return instance.get(path);
+};
+
 export const addServer = (payload) => {
   let path = endpoints.ADD_SERVER_API_PATH;
   return instance.post(path, payload);
